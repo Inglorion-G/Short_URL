@@ -7,6 +7,20 @@ class ShortenedUrl < ActiveRecord::Base
     primary_key: :id
   )
 
+  has_many(
+    :visits,
+    class_name: "Visit",
+    foreign_key: :shortened_id,
+    primary_key: :id
+  )
+
+  has_many(
+    :visitors,
+    through: :visits,
+    source: :user,
+    uniq: true
+  )
+
   def self.create_for_user_and_long_url!(user, long_url)
     short_url = ShortenedUrl.random_code
     self.create!({user_id: user.id, long_url: long_url, short_url: short_url})
