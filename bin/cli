@@ -1,0 +1,28 @@
+puts "Input your email:"
+email = gets.chomp
+user = User.find_by(:email => email)
+
+if user.nil?
+  user = User.create!({ :email => email })
+  puts "Created new user #{user.email}!"
+end
+
+loop do
+  puts "Watcha wanna do?"
+  puts "0. Create shortened URL"
+  puts "1. Visit shortened URL"
+  puts "Q. Quit"
+  choice = gets.chomp.to_i
+  if choice.zero?
+    puts "Type in your long URL"
+    long_url = gets.chomp
+    short_url = ShortenedUrl.create_for_user_and_long_url!(user, long_url)
+    puts "Your short URL is #{short_url.short_url}"
+  elsif choice == 1
+    puts "Type in the short URL"
+    short_url = gets.chomp
+    shortened_url = ShortenedUrl.find_by(:short_url => short_url)
+    Visit.create!(user_id: user.id, shortened_id: shortened_url.id)
+    puts "Visited #{shortened_url.short_url}"
+  end
+end
