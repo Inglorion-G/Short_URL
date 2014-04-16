@@ -1,5 +1,12 @@
 class ShortenedUrl < ActiveRecord::Base
 
+  belongs_to(
+    :submitter,
+    class_name: "User",
+    foreign_key: :user_id,
+    primary_key: :id
+  )
+
   def self.create_for_user_and_long_url!(user, long_url)
     short_url = ShortenedUrl.random_code
     self.create!({user_id: user.id, long_url: long_url, short_url: short_url})
