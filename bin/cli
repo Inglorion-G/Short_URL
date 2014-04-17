@@ -12,17 +12,21 @@ loop do
   puts "0. Create shortened URL"
   puts "1. Visit shortened URL"
   puts "Q. Quit"
-  choice = gets.chomp.to_i
-  if choice.zero?
+  choice = gets.chomp
+  if choice.downcase == 'q'
+    break
+  elsif choice.to_i.zero?
     puts "Type in your long URL"
     long_url = gets.chomp
     short_url = ShortenedUrl.create_for_user_and_long_url!(user, long_url)
     puts "Your short URL is #{short_url.short_url}"
-  elsif choice == 1
+  elsif choice.to_i == 1
     puts "Type in the short URL"
     short_url = gets.chomp
     shortened_url = ShortenedUrl.find_by(:short_url => short_url)
     Visit.create!(user_id: user.id, shortened_id: shortened_url.id)
+
+    Launchy.open(ShortenedUrl.find_by(short_url: short_url).long_url)
     puts "Visited #{shortened_url.short_url}"
   end
 end
