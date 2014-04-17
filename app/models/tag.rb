@@ -11,7 +11,7 @@ class Tag < ActiveRecord::Base
   def most_popular
     query = <<-SQL
     SELECT
-      COUNT(*)
+      COUNT(shortened_urls.*)
     FROM
       visits
     JOIN
@@ -24,11 +24,12 @@ class Tag < ActiveRecord::Base
       3
     SQL
 
-    development.sqlite3.execute(query)
+    ShortenedUrl.find_by_sql(query)
   end
 
   def most_popular_rails
-
+    ShortenedUrl.joins(:visits).group("visits.shortened_id").order(
+      "COUNT(visits.id)").where("tag_id", self.id)limit(5)
   end
 
 end
