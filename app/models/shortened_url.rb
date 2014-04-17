@@ -21,6 +21,15 @@ class ShortenedUrl < ActiveRecord::Base
     uniq: true
   )
 
+  has_many(
+    :tag_links,
+    class_name: "TagLink",
+    foreign_key: :link_id,
+    primary_key: :id
+  )
+
+  has_many :tags, through: :tag_links, source: :tag
+
   def num_clicks
     visits.count
   end
