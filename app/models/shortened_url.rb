@@ -15,10 +15,9 @@ class ShortenedUrl < ActiveRecord::Base
   )
 
   has_many(
-    :visitors,
+    :visitors, -> {distinct},
     through: :visits,
-    source: :user,
-    uniq: true
+    source: :user
   )
 
   has_many(
